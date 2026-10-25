@@ -16,7 +16,7 @@
             color: #fff;
             text-align: center;
             padding: 20px;
-            overflow: hidden;
+            overflow: hidden; /* Скрываем то, что выходит за экран */
         }
         .card {
             background: rgba(255, 255, 255, 0.1);
@@ -26,14 +26,39 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.3);
             border: 1px solid rgba(255, 255, 255, 0.2);
             max-width: 400px;
+            z-index: 10;
             animation: fadeIn 2s ease;
         }
         h1 { color: #ff9a9e; font-size: 2.2em; margin-bottom: 10px; }
         p { font-size: 1.2em; line-height: 1.6; color: #e0e0e0; }
         .year { font-size: 1.5em; color: #ff9a9e; margin-top: 20px; font-weight: bold; }
         .heart { font-size: 3em; animation: beat 1.5s infinite; display: inline-block; margin-top: 10px;}
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+        
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        @keyframes beat { 
+            0%, 100% { transform: scale(1); } 
+            50% { transform: scale(1.2); } 
+        }
+
+        /* Стили для падающих сердечек */
+        .falling-heart {
+            position: absolute;
+            top: -10vh;
+            color: #ff9a9e;
+            user-select: none;
+            pointer-events: none;
+            animation: fall linear forwards;
+            z-index: 1;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(110vh) rotate(360deg);
+            }
+        }
     </style>
 </head>
 <body>
@@ -43,5 +68,38 @@
         <p class="year">2024</p>
         <div class="heart">💖</div>
     </div>
+
+    <script>
+        // Функция для создания одного сердечка
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('falling-heart');
+            
+            // Выбираем случайный символ сердечка
+            const hearts = ['❤️', '💖', '💗', '💓', '💘'];
+            heart.innerText = hearts[Math.floor(Math.random() * hearts.length)];
+            
+            // Случайная позиция по горизонтали
+            heart.style.left = Math.random() * 100 + 'vw';
+            
+            // Случайный размер
+            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            
+            // Случайная скорость падения (от 4 до 8 секунд)
+            const duration = Math.random() * 4 + 4;
+            heart.style.animationDuration = duration + 's';
+            
+            // Добавляем сердечко на страницу
+            document.body.appendChild(heart);
+            
+            // Удаляем сердечко, когда оно упадет, чтобы не грузить телефон
+            setTimeout(() => {
+                heart.remove();
+            }, duration * 1000);
+        }
+
+        // Создаем новое сердечко каждые 300 миллисекунд
+        setInterval(createHeart, 300);
+    </script>
 </body>
 </html>
